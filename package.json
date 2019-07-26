@@ -1,0 +1,57 @@
+{
+  "name": "swork",
+  "version": "1.0.0",
+  "description": "Service Worker Algorithm Builder: A service worker framework using the middleware pattern.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest --config jestconfig.json --coverage --all",
+    "lint": "tslint -p tsconfig.json",
+    "build": "tsc",
+    "prepare": "yarn build && yarn lint",
+    "prepublishOnly": "yarn test"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.6",
+    "@types/service-worker-mock": "^2.0.0",
+    "jest": "^24.1.0",
+    "service-worker-mock": "^2.0.3",
+    "ts-jest": "^24.0.0",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.14.0",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.3.3333"
+  },
+  "keywords": [
+    "service",
+    "worker",
+    "serviceworker",
+    "middleware",
+    "fetch",
+    "pipeline",
+    "FetchEvent",
+    "offline",
+    "activate",
+    "install",
+    "PWA",
+    "progressive",
+    "web",
+    "app",
+    "application"
+  ],
+  "icon": "",
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justin-lee-collins/swork"
+  },
+  "homepage": "https://github.com/justin-lee-collins/swork"
+}

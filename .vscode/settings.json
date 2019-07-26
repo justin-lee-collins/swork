@@ -1,0 +1,11 @@
+{
+    "files.exclude": {
+        "dist": true,
+        "node_modules": true
+    },
+    "editor.fontLigatures": true,
+    "editor.fontFamily": "Fira Code",
+    "cSpell.words": [
+        "swork"
+    ]
+}

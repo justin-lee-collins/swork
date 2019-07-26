@@ -1,0 +1,8 @@
+{
+    "transform": {
+      "^.+\\.(t|j)sx?$": "ts-jest"
+    },
+    "testRegex": "/tests/.*tests\\.ts",
+    "coveragePathIgnorePatterns": ["/node_modules/", "<rootDir>/tests/mock-helper\\.ts"],
+    "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
+}
