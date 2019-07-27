@@ -8,14 +8,16 @@ export class Swork {
 
     constructor() {
         this.eventHandlers = new Map<EventType, Array<() => Promise<void> | void>>();
+        this.eventHandlers.set("install", []);
+        this.eventHandlers.set("activate", []);
     }
 
     public listen(): void {
-        if (this.eventHandlers.has("install")) {
+        if (this.eventHandlers.get("install")!.length) {
             builder.add.install(this.eventHandlers.get("install")!);
         }
 
-        if (this.eventHandlers.has("activate")) {
+        if (this.eventHandlers.get("activate")!.length) {
             builder.add.activate(this.eventHandlers.get("activate")!);
         }
 
@@ -26,6 +28,8 @@ export class Swork {
     public use(...params: Array<(Swork | ((context: FetchContext, next: RequestDelegate) => Promise<void> | void))>): Swork {
         params.forEach((param) => {
             if (param instanceof Swork) {
+                Array.prototype.push.apply(this.eventHandlers.get("install"), param.eventHandlers.get("install")!);                
+                Array.prototype.push.apply(this.eventHandlers.get("activate"), param.eventHandlers.get("activate")!);
                 this.middlewares.push.apply(this.middlewares, param.middlewares);
             } else {
                 this.middlewares.push((next: RequestDelegate) => {
@@ -41,12 +45,7 @@ export class Swork {
     }
 
     public on(event: EventType, ... handlers: Array<() => Promise<void> | void>): void {
-        if (!this.eventHandlers.has(event)) {
-            this.eventHandlers.set(event, []);
-        }
-
-        const eventHandlers = this.eventHandlers.get(event)!;
-        eventHandlers.push.apply(eventHandlers, handlers);
+        Array.prototype.push.apply(this.eventHandlers.get(event)!, handlers);
     }
 
     private build(): RequestDelegate {

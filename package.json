@@ -1,7 +1,7 @@
 {
   "name": "swork",
-  "version": "1.0.0",
-  "description": "Service Worker Algorithm Builder: A service worker framework using the middleware pattern.",
+  "version": "1.0.1",
+  "description": "A service worker building framework using a middleware pattern.",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest --config jestconfig.json --coverage --all",
