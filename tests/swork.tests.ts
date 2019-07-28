@@ -1,4 +1,3 @@
-import { RequestDelegate } from "../src/abstractions";
 import * as builder from "../src/builder";
 import { FetchContext } from "../src/fetch-context";
 import { Swork } from "../src/swork";
@@ -20,7 +19,7 @@ describe("Swork tests", () => {
     test("basic", async (done) => {
         let middlewareCalled = false;
 
-        app.use(async (context: FetchContext, next: RequestDelegate) => await next(context),
+        app.use(async (context: FetchContext, next: () => Promise<void>) => await next(),
             (context: FetchContext) => {
                 middlewareCalled = true;
             });
@@ -37,16 +36,16 @@ describe("Swork tests", () => {
     test("app chain", async (done) => {
         const middlewareCallLocations: string[] = [];
 
-        app.use(async (context: FetchContext, next: RequestDelegate) => {
+        app.use(async (context: FetchContext, next: () => Promise<void>) => {
             middlewareCallLocations.push("Swork");
-            return await next(context);
+            return await next();
         });
 
         const app2 = new Swork();
 
-        app2.use(async (context: FetchContext, next: RequestDelegate) => {
+        app2.use(async (context: FetchContext, next: () => Promise<void>) => {
             middlewareCallLocations.push("Swork2");
-            return await next(context);
+            return await next();
         });
 
         app2.on("activate", noopHandler);
@@ -119,15 +118,40 @@ describe("Swork tests", () => {
         expect(fetchMock.mock.calls.length).toBe(2);
     });
 
-    // test("on creates one array per event type", () => {
-    //     app.on("install", noopHandler);
+    test("next called multiple times errors", async (done) => {
+        let error: Error | null = null;
 
-    //     // tslint:disable-next-line:no-string-literal
-    //     const array = app["eventHandlers"].get("install")!;
+        app.use(async (context: FetchContext, next: () => Promise<void>) => {
+            await next();
+            try {
+                await next();
+            } catch (e) {
+                error = e;
+            }
+        });
 
-    //     app.on("install", noopHandler);
+        const delegate = build(app);
+        await delegate(getFetchEvent("http://www.google.com"));
 
-    //     // tslint:disable-next-line:no-string-literal
-    //     expect(array).toStrictEqual(app["eventHandlers"].get("install")!);
-    // });
+        expect(error!.message).toBe("next() called multiple times");
+
+        done();
+    });
+
+    test("async error gets bubbled up", async (done) => {
+        app.use(async () => {
+            //await new Promise((resolve) => setTimeout(resolve, 10));
+            throw new Error("A bad thing happened.");
+        });
+
+        const delegate = build(app);
+
+        try {
+            await delegate(getFetchEvent("http://www.google.com"));
+        } catch (e) {
+            expect(e.message).toBe("A bad thing happened.");
+        }
+
+        done();
+    });
 });

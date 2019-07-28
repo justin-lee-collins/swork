@@ -6,6 +6,8 @@
     "editor.fontLigatures": true,
     "editor.fontFamily": "Fira Code",
     "cSpell.words": [
+        "jestconfig",
+        "serviceworker",
         "swork"
     ]
 }

@@ -1,10 +1,14 @@
-import { EventType, RequestDelegate } from "./abstractions";
 import * as builder from "./builder";
 import { FetchContext } from "./fetch-context";
 
+export type EventType = "activate" | "install";
+export type EventHandler = () => Promise<void> | void;
+export type RequestDelegate = (context: FetchContext) => Promise<void>;
+export type Middleware = (context: FetchContext, next: () => Promise<void>) => Promise<void> | void;
+
 export class Swork {
-    private middlewares: Array<(requestDelegate: RequestDelegate) => RequestDelegate> = [];
-    private eventHandlers: Map<EventType, Array<() => Promise<void> | void>>;
+    protected middlewares: Middleware[] = [];
+    protected eventHandlers: Map<EventType, Array<() => Promise<void> | void>>;
 
     constructor() {
         this.eventHandlers = new Map<EventType, Array<() => Promise<void> | void>>();
@@ -25,38 +29,46 @@ export class Swork {
         builder.add.fetch(delegate);
     }
 
-    public use(...params: Array<(Swork | ((context: FetchContext, next: RequestDelegate) => Promise<void> | void))>): Swork {
+    public use(...params: Array<(Swork | Middleware)>): Swork {
         params.forEach((param) => {
             if (param instanceof Swork) {
-                Array.prototype.push.apply(this.eventHandlers.get("install"), param.eventHandlers.get("install")!);                
+                Array.prototype.push.apply(this.eventHandlers.get("install"), param.eventHandlers.get("install")!);
                 Array.prototype.push.apply(this.eventHandlers.get("activate"), param.eventHandlers.get("activate")!);
                 this.middlewares.push.apply(this.middlewares, param.middlewares);
             } else {
-                this.middlewares.push((next: RequestDelegate) => {
-                    return (context: FetchContext) => {
-                        const simpleNext = () => next(context);
-                        return param(context, simpleNext);
-                    };
-                });
+                this.middlewares.push(param);
             }
         });
 
         return this;
     }
 
-    public on(event: EventType, ... handlers: Array<() => Promise<void> | void>): void {
+    public on(event: "install" | "activate", ...handlers: Array<() => Promise<void> | void>): void {
         Array.prototype.push.apply(this.eventHandlers.get(event)!, handlers);
     }
 
     private build(): RequestDelegate {
-        let app: RequestDelegate = (context: FetchContext) => {
+        this.middlewares.push((context: FetchContext) => {
             context.response = fetch(context.request);
-        };
-
-        this.middlewares.reverse().forEach((middleware) => {
-            app = middleware(app);
+            return Promise.resolve();
         });
 
-        return app;
+        return (context: FetchContext) => {
+            let index = -1;
+
+            const dispatch = (currentIndex: number): Promise<void> => {
+                if (currentIndex <= index) {
+                    return Promise.reject(new Error("next() called multiple times"));
+                }
+
+                index = currentIndex;
+
+                const middleware: Middleware = this.middlewares[currentIndex];
+
+                return Promise.resolve(middleware(context, dispatch.bind(null, currentIndex + 1)));
+            };
+
+            return dispatch(0);
+        };
     }
 }

@@ -1,10 +1,11 @@
-export interface IServiceWorkerConfiguration {
+// tslint:disable-next-line:interface-name
+export interface Configuration {
 
     /**
      * Defines the version of the service worker.
      *
      * @type {string}
-     * @memberof IServiceWorkerConfiguration
+     * @memberof Configuration
      */
     version: string;
 
@@ -14,7 +15,7 @@ export interface IServiceWorkerConfiguration {
      * worker's location.
      *
      * @type {string}
-     * @memberof IServiceWorkerConfiguration
+     * @memberof Configuration
      */
     origin: string;
 
@@ -23,7 +24,7 @@ export interface IServiceWorkerConfiguration {
      * values include "development" and "production". 
      *
      * @type {("production" | "development")}
-     * @memberof IServiceWorkerConfiguration
+     * @memberof Configuration
      */
     environment: "production" | "development";
 }
@@ -32,4 +33,4 @@ export const configuration = {
     environment: "production",
     origin: self.location.origin,
     version: "1.0.0",
-} as IServiceWorkerConfiguration;
+} as Configuration;

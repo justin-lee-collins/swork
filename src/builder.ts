@@ -1,5 +1,5 @@
-import { EventHandler, EventType, RequestDelegate } from "./abstractions";
 import { FetchContext } from "./fetch-context";
+import { EventHandler, EventType, RequestDelegate } from "./swork";
 
 function addExtendableEvent(eventType: EventType, handlers: EventHandler[]) {
     if (handlers.length) {
