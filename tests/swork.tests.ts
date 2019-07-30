@@ -1,6 +1,6 @@
 import * as builder from "../src/builder";
 import { FetchContext } from "../src/fetch-context";
-import { Swork } from "../src/swork";
+import { Swork, Middleware } from "../src/swork";
 import { getFetchEvent, mockInit } from "./mock-helper";
 
 // tslint:disable-next-line:no-string-literal
@@ -140,7 +140,7 @@ describe("Swork tests", () => {
 
     test("async error gets bubbled up", async (done) => {
         app.use(async () => {
-            //await new Promise((resolve) => setTimeout(resolve, 10));
+            await new Promise((resolve) => setTimeout(resolve, 10));
             throw new Error("A bad thing happened.");
         });
 
@@ -151,6 +151,37 @@ describe("Swork tests", () => {
         } catch (e) {
             expect(e.message).toBe("A bad thing happened.");
         }
+
+        done();
+    });
+
+    test("non async response works", async (done) => {
+        const response = new Response("asdf");
+
+        app.use((c: FetchContext) => {
+            c.respondWith(response);
+        });
+
+        const delegate = build(app);
+
+        const context = new FetchContext(getFetchEvent("http://www.google.com"));
+
+        await delegate(context);
+
+        expect(context.response).toStrictEqual(response);
+
+        done();
+    });
+
+    test("use supports array", async (done) => {
+        const middleware = jest.fn();
+        app.use([middleware, middleware, middleware]);
+
+        const delegate = build(app);
+
+        await delegate(getFetchEvent("http://www.google.com"));
+
+        expect(middleware).toBeCalledTimes(1);
 
         done();
     });

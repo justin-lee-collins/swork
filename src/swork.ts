@@ -29,15 +29,21 @@ export class Swork {
         builder.add.fetch(delegate);
     }
 
-    public use(...params: Array<(Swork | Middleware)>): Swork {
+    public use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork {
         params.forEach((param) => {
-            if (param instanceof Swork) {
-                Array.prototype.push.apply(this.eventHandlers.get("install"), param.eventHandlers.get("install")!);
-                Array.prototype.push.apply(this.eventHandlers.get("activate"), param.eventHandlers.get("activate")!);
-                this.middlewares.push.apply(this.middlewares, param.middlewares);
-            } else {
-                this.middlewares.push(param);
+            if (!Array.isArray(param)) {
+                param = [param];
             }
+
+            param.forEach((p) => {
+                if (p instanceof Swork) {
+                    Array.prototype.push.apply(this.eventHandlers.get("install"), p.eventHandlers.get("install")!);
+                    Array.prototype.push.apply(this.eventHandlers.get("activate"), p.eventHandlers.get("activate")!);
+                    this.middlewares.push.apply(this.middlewares, p.middlewares);
+                } else {
+                    this.middlewares.push(p);
+                }
+            });
         });
 
         return this;
