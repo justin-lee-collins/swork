@@ -82,3 +82,9 @@ listen(): void
 ```
 
 To initialize your Swork application, call `listen`. This will add the event handlers and callbacks to your service worker application.
+
+## Middleware Implementations
+
+| Middleware | Description | Package | Repository |
+|------------|-------------|---------|------------|
+| swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
