@@ -1,5 +1,5 @@
 import { Configuration } from "./configuration";
 import { FetchContext } from "./fetch-context";
-import { Swork } from "./swork";
+import { Middleware, Swork } from "./swork";
 
-export { Swork, Configuration, FetchContext };
+export { Swork, Configuration, FetchContext, Middleware };

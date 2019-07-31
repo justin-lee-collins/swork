@@ -1,4 +1,4 @@
-# Swork
+# swork
 
 Swork is a service worker building framework intended to be a robust foundation for service worker applications. TypeScript and async functions are central to its implementation enabling increased productivity, reduced error rate and the removal of callbacks. Swork is not bundled with any middleware.
 
@@ -12,7 +12,7 @@ import { Swork, FetchContext, RequestDelegate } from "swork";
 const app = new Swork();
 
 app.use((context: FetchContext, next: RequestDelegate) => {
-    context.respondWith(new Response("Hello World!"));
+    context.response = new Response("Hello World!");
 });
 
 app.listen();
@@ -62,7 +62,7 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 ## Use
 
 ```ts
-use(...params: Array<(Swork | Middleware)>): Swork
+use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork
 ```
 
 The `use` method accepts a middleware. Middleware are executed in the order provided for each incoming request. `use` can also accept arrays of middlewares or even provide a different `Swork` app instance.
@@ -70,7 +70,7 @@ The `use` method accepts a middleware. Middleware are executed in the order prov
 ## On
 
 ```ts
-on(event: "install" | "activate", ...handlers: Array<() => Promise<void> | void>): void
+on(event: "install" | "activate", ...handlers: Array<(event: ExtendableEvent) => Promise<void> | void>): void
 ```
 
 Service workers have two life-cycle events associated with their start up: `install` and `activate`. Use the `on` method to provide any callbacks to be executed during that event.
@@ -82,3 +82,9 @@ listen(): void
 ```
 
 To initialize your Swork application, call `listen`. This will add the event handlers and callbacks to your service worker application.
+
+## Middleware Implementations
+
+| Middleware | Description | Package | Repository |
+|------------|-------------|---------|------------|
+| swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
