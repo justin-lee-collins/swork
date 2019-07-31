@@ -2,7 +2,7 @@ import * as builder from "./builder";
 import { FetchContext } from "./fetch-context";
 
 export type EventType = "activate" | "install";
-export type EventHandler = () => Promise<void> | void;
+export type EventHandler = (event: ExtendableEvent) => Promise<void> | void;
 export type RequestDelegate = (context: FetchContext) => Promise<void>;
 export type Middleware = (context: FetchContext, next: () => Promise<void>) => Promise<void> | void;
 
@@ -49,7 +49,7 @@ export class Swork {
         return this;
     }
 
-    public on(event: "install" | "activate", ...handlers: Array<() => Promise<void> | void>): void {
+    public on(event: "install" | "activate", ...handlers: Array<(event: ExtendableEvent) => Promise<void> | void>): void {
         Array.prototype.push.apply(this.eventHandlers.get(event)!, handlers);
     }
 

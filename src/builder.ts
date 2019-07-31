@@ -12,41 +12,48 @@ function addFetchEvent(delegate: RequestDelegate) {
 }
 
 function getExtendableEventListener(handlers: EventHandler[]): EventListenerOrEventListenerObject {
-    return (event) => {
-        (event as ExtendableEvent).waitUntil(eventHandlers.extendableEvent(handlers)());
+    const handler = eventHandlers.extendableEvent(handlers);
+    
+    return async (event) => {
+        (event as ExtendableEvent).waitUntil(handler(event as ExtendableEvent));
     };
 }
 
 function getFetchEventListener(delegate: RequestDelegate): EventListenerOrEventListenerObject {
     return (event) => {
         const fetchEvent = event as FetchEvent;
-        fetchEvent.waitUntil(eventHandlers.fetchEvent(delegate, fetchEvent)());
+
+        const handler = eventHandlers.fetchEvent(delegate, fetchEvent);
+
+        fetchEvent.waitUntil(handler);
+        fetchEvent.respondWith(handler);
     };
 }
 
 function getExtendableEventHandler(handlers: EventHandler[]) {
-    return (async () => {
+    return async (event: ExtendableEvent) => {
         await Promise.all(handlers.map(async (handler) => {
             try {
-                await handler();
+                await handler(event);
             } catch (e) {
-                // tslint:disable-next-line:no-console
                 console.error(e);
             }
         }));
-    });
+    };
 }
 
-function getFetchEventHandler(delegate: RequestDelegate, fetchEvent: FetchEvent) {
+function getFetchEventHandler(delegate: RequestDelegate, fetchEvent: FetchEvent): Promise<Response> {
     return (async () => {
         const fetchContext = new FetchContext(fetchEvent);
+
         try {
             await delegate(fetchContext);
         } catch (e) {
-            // tslint:disable-next-line:no-console
             console.error(e);
         }
-    });
+        
+        return fetchContext.response;
+    })();
 }
 
 export const add = {

@@ -1,11 +1,10 @@
 import * as builder from "../src/builder";
 import { FetchContext } from "../src/fetch-context";
-import { Swork, Middleware } from "../src/swork";
+import { Swork } from "../src/swork";
 import { getFetchEvent, mockInit } from "./mock-helper";
 
 // tslint:disable-next-line:no-string-literal
 const build = (app: Swork) => app["build"]();
-// tslint:disable-next-line:no-empty
 const noopHandler = () => {};
 
 describe("Swork tests", () => {
