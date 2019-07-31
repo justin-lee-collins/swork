@@ -7,9 +7,4 @@ export class FetchContext {
         this.event = event;
         this.request = event.request;
     }
-
-    public respondWith(response: Promise<Response> | Response) {
-        this.response = response;
-        this.event.respondWith(response);
-    }
 }

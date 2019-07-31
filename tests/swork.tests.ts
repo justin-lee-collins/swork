@@ -158,7 +158,7 @@ describe("Swork tests", () => {
         const response = new Response("asdf");
 
         app.use((c: FetchContext) => {
-            c.respondWith(response);
+            c.response = response;
         });
 
         const delegate = build(app);
