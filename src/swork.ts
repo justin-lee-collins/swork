@@ -1,10 +1,12 @@
 import * as builder from "./builder";
 import { FetchContext } from "./fetch-context";
 
-export type EventType = "activate" | "install";
-export type EventHandler = (event: ExtendableEvent) => Promise<void> | void;
+export type EventType = "activate" | "install" | "message" | "notificationclick" | "notificationclose" | "push" | "pushsubscriptionchange" | "sync";
+export type EventHandler = (event: any) => Promise<void> | void;
 export type RequestDelegate = (context: FetchContext) => Promise<void>;
 export type Middleware = (context: FetchContext, next: () => Promise<void>) => Promise<void> | void;
+
+const allEvents = ["activate", "install", "message", "notificationclick", "notificationclose", "push", "pushsubscriptionchange", "sync"];
 
 export class Swork {
     protected middlewares: Middleware[] = [];
@@ -12,18 +14,41 @@ export class Swork {
 
     constructor() {
         this.eventHandlers = new Map<EventType, Array<() => Promise<void> | void>>();
-        this.eventHandlers.set("install", []);
-        this.eventHandlers.set("activate", []);
+        allEvents.forEach((x) => {
+            this.eventHandlers.set(x as EventType, []);
+        });
     }
 
     public listen(): void {
-        if (this.eventHandlers.get("install")!.length) {
-            builder.add.install(this.eventHandlers.get("install")!);
-        }
-
-        if (this.eventHandlers.get("activate")!.length) {
-            builder.add.activate(this.eventHandlers.get("activate")!);
-        }
+        allEvents.forEach((x) => {
+            const handlers = this.eventHandlers.get(x as EventType)!;
+            switch (x as EventType) {
+                case "activate":
+                    builder.add.activate(handlers);
+                    break;
+                case "install":
+                    builder.add.install(handlers);
+                    break;
+                case "message":
+                    builder.add.message(handlers);
+                    break;
+                case "notificationclick":
+                    builder.add.notificationClick(handlers);
+                    break;
+                case "notificationclose":
+                    builder.add.notificationClose(handlers);
+                    break;
+                case "push":
+                    builder.add.push(handlers);
+                    break;
+                case "pushsubscriptionchange":
+                    builder.add.pushSubscriptionChange(handlers);
+                    break;
+                case "sync":
+                    builder.add.sync(handlers);
+                    break;
+            }
+        });
 
         const delegate = this.build();
         builder.add.fetch(delegate);
@@ -37,8 +62,10 @@ export class Swork {
 
             param.forEach((p) => {
                 if (p instanceof Swork) {
-                    Array.prototype.push.apply(this.eventHandlers.get("install"), p.eventHandlers.get("install")!);
-                    Array.prototype.push.apply(this.eventHandlers.get("activate"), p.eventHandlers.get("activate")!);
+                    allEvents.forEach((x) => {
+                        Array.prototype.push.apply(this.eventHandlers.get(x as EventType), p.eventHandlers.get(x as EventType)!);
+                    });
+
                     this.middlewares.push.apply(this.middlewares, p.middlewares);
                 } else {
                     this.middlewares.push(p);
@@ -49,7 +76,7 @@ export class Swork {
         return this;
     }
 
-    public on(event: "install" | "activate", ...handlers: Array<(event: ExtendableEvent) => Promise<void> | void>): void {
+    public on(event: EventType, ...handlers: Array<(event: any) => Promise<void> | void>): void {
         Array.prototype.push.apply(this.eventHandlers.get(event)!, handlers);
     }
 
