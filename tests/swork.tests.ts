@@ -98,23 +98,28 @@ describe("Swork tests", () => {
     });
 
     test("listen calls builder", () => {
+        
         const activateMock = builder.add.activate = jest.fn();
-        const installMock = builder.add.install = jest.fn();
         const fetchMock = builder.add.fetch = jest.fn();
+        const installMock = builder.add.install = jest.fn();
+        const messageMock = builder.add.message = jest.fn();
+        const notificationClickMock = builder.add.notificationClick = jest.fn();
+        const notificationCloseMock = builder.add.notificationClose = jest.fn();
+        const pushMock = builder.add.push = jest.fn();
+        const pushSubscriptionChangeMock = builder.add.pushSubscriptionChange = jest.fn();        
+        const syncMock = builder.add.sync = jest.fn();
 
         app.listen();
 
-        expect(activateMock.mock.calls.length).toBe(0);
-        expect(installMock.mock.calls.length).toBe(0);
-        expect(fetchMock.mock.calls.length).toBe(1);
-
-        app.on("install", noopHandler);
-        app.on("activate", noopHandler);
-        app.listen();
-
-        expect(activateMock.mock.calls.length).toBe(1);
-        expect(installMock.mock.calls.length).toBe(1);
-        expect(fetchMock.mock.calls.length).toBe(2);
+        expect(activateMock).toBeCalledTimes(1);
+        expect(fetchMock).toBeCalledTimes(1);
+        expect(installMock).toBeCalledTimes(1);
+        expect(messageMock).toBeCalledTimes(1);
+        expect(notificationClickMock).toBeCalledTimes(1);
+        expect(notificationCloseMock).toBeCalledTimes(1);
+        expect(pushMock).toBeCalledTimes(1);
+        expect(pushSubscriptionChangeMock).toBeCalledTimes(1);
+        expect(syncMock).toBeCalledTimes(1);
     });
 
     test("next called multiple times errors", async (done) => {

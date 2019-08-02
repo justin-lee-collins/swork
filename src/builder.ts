@@ -60,6 +60,12 @@ export const add = {
     activate: (handlers: EventHandler[]) => addExtendableEvent("activate", handlers),
     fetch: addFetchEvent,
     install: (handlers: EventHandler[]) => addExtendableEvent("install", handlers),
+    message: (handlers: EventHandler[]) => addExtendableEvent("message", handlers),
+    notificationClick: (handlers: EventHandler[]) => addExtendableEvent("notificationclick", handlers),
+    notificationClose: (handlers: EventHandler[]) => addExtendableEvent("notificationclose", handlers),
+    push: (handlers: EventHandler[]) => addExtendableEvent("push", handlers),
+    pushSubscriptionChange: (handlers: EventHandler[]) => addExtendableEvent("pushsubscriptionchange", handlers),
+    sync: (handlers: EventHandler[]) => addExtendableEvent("sync", handlers),
 };
 
 export const eventListeners = {

@@ -30,6 +30,23 @@ describe("Service worker builder tests", () => {
         builder.eventHandlers.extendableEvent = eventHandlerFactory;
     });
 
+    function eventAddTest(add: (handlers: EventHandler[]) => void) {
+        const listenerMock = jest.fn(() => {});
+        const addEventListenerMock = self.addEventListener = jest.fn();  
+
+        builder.eventListeners.extendableEvent = listenerMock as unknown as (handlers: EventHandler[]) => EventListenerOrEventListenerObject;
+
+        add([]);
+
+        expect(listenerMock).not.toHaveBeenCalled();        
+        expect(addEventListenerMock).not.toHaveBeenCalled();
+
+        add([() => {}]);
+
+        expect(listenerMock).toHaveBeenCalledTimes(1);        
+        expect(addEventListenerMock).toHaveBeenCalledTimes(1);
+    }
+
     test("fetchEvent eventHandler", async (done) => {
         let delegateCalled = false;
         const handler = builder.eventHandlers.fetchEvent((context: FetchContext) => {
@@ -113,37 +130,35 @@ describe("Service worker builder tests", () => {
     });
 
     test("add activate", () => {
-        const listenerMock = jest.fn(() => {});        
-        const addEventListenerMock = self.addEventListener = jest.fn();  
-
-        builder.eventListeners.extendableEvent = listenerMock as unknown as (handlers: EventHandler[]) => EventListenerOrEventListenerObject;
-
-        builder.add.activate([]);
-
-        expect(listenerMock).not.toHaveBeenCalled();
-        expect(addEventListenerMock).not.toHaveBeenCalled();
-
-        builder.add.activate([() => {}]);
-
-        expect(listenerMock).toHaveBeenCalledTimes(1);
-        expect(addEventListenerMock).toHaveBeenCalledTimes(1);
+        eventAddTest(builder.add.activate);
+    });
+    
+    test("add install", () => {
+        eventAddTest(builder.add.install);
     });
 
-    test("add install", () => {
-        const listenerMock = jest.fn(() => {});
-        const addEventListenerMock = self.addEventListener = jest.fn();  
+    test("add message", () => {
+        eventAddTest(builder.add.message);
+    });
 
-        builder.eventListeners.extendableEvent = listenerMock as unknown as (handlers: EventHandler[]) => EventListenerOrEventListenerObject;
+    test("add notificationClick", () => {
+        eventAddTest(builder.add.notificationClick);
+    });
 
-        builder.add.install([]);
+    test("add notificationClose", () => {
+        eventAddTest(builder.add.notificationClose);
+    });
 
-        expect(listenerMock).not.toHaveBeenCalled();        
-        expect(addEventListenerMock).not.toHaveBeenCalled();
+    test("add push", () => {
+        eventAddTest(builder.add.push);
+    });
 
-        builder.add.install([() => {}]);
+    test("add pushSubscriptionChange", () => {
+        eventAddTest(builder.add.pushSubscriptionChange);
+    });
 
-        expect(listenerMock).toHaveBeenCalledTimes(1);        
-        expect(addEventListenerMock).toHaveBeenCalledTimes(1);
+    test("add sync", () => {
+        eventAddTest(builder.add.sync);
     });
 
     test("add fetch", () => {

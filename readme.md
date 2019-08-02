@@ -59,21 +59,38 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 });
 ```
 
+## Implementations
+
+| Middleware | Description | Package | Repository |
+|------------|-------------|---------|------------|
+| swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
+
 ## Use
 
 ```ts
 use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork
 ```
 
-The `use` method accepts a middleware. Middleware are executed in the order provided for each incoming request. `use` can also accept arrays of middlewares or even provide a different `Swork` app instance.
+The `use` method accepts a middleware. Middleware are executed in the order provided for each incoming request via a `fetch` event handler. `use` can also accept arrays of middlewares or even provide a different `Swork` app instance.
 
 ## On
 
 ```ts
-on(event: "install" | "activate", ...handlers: Array<(event: ExtendableEvent) => Promise<void> | void>): void
+on(event: EventType, ...handlers: Array<(event: any) => Promise<void> | void>): void
 ```
 
-Service workers have two life-cycle events associated with their start up: `install` and `activate`. Use the `on` method to provide any callbacks to be executed during that event.
+Use the `on` method to provide any handlers to be executed during service worker events. The event type will vary based upon the event fired.
+
+### Swork supported events
+
+* `activate`
+* `install`
+* `message`
+* `notificationclick`
+* `notificationclose`
+* `push`
+* `pushsubscriptionchange`
+* `sync`
 
 ## Listen
 
@@ -83,8 +100,22 @@ listen(): void
 
 To initialize your Swork application, call `listen`. This will add the event handlers and callbacks to your service worker application.
 
-## Middleware Implementations
+## Configuration
 
-| Middleware | Description | Package | Repository |
-|------------|-------------|---------|------------|
-| swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
+There are a handful of properties which will apply globally to the Swork application. Those include:
+
+* `version`  
+    The version of the service worker. Defaults to `"1.0.0"`.
+* `origin`  
+    The origin of the service worker. Defaults to `self.location.origin`.
+* `environment`  
+    The running environment. Defaults to `production`.
+
+These configurations can be accessed or modified directly through the `swork` module.
+
+```ts
+import { configuration } from "swork";
+
+console.log(configuration);
+// => { version: "1.0.0", origin: "https://localhost", environment: "production" }
+```
