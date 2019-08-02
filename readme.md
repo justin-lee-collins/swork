@@ -111,10 +111,10 @@ There are a handful of properties which will apply globally to the Swork applica
 * `environment`  
     The running environment. Defaults to `production`.
 
-These configurations can be accessed or modified by referencing the `swork/configuration` module.
+These configurations can be accessed or modified directly through the `swork` module.
 
 ```ts
-import { configuration } from "swork/configuration";
+import { configuration } from "swork";
 
 console.log(configuration);
 // => { version: "1.0.0", origin: "https://localhost", environment: "production" }
