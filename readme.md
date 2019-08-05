@@ -64,6 +64,7 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 | Middleware | Description | Package | Repository |
 |------------|-------------|---------|------------|
 | swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
+| swork-cache| Cache strategies and events | [npmjs](https://www.npmjs.com/package/swork-cache) | [github](https://github.com/justin-lee-collins/swork-cache)
 
 ## Use
 

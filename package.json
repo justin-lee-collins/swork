@@ -1,6 +1,6 @@
 {
   "name": "swork",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A service worker building framework using a middleware pattern.",
   "main": "dist/index.js",
   "scripts": {
