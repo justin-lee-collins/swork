@@ -1,17 +1,43 @@
 import * as builder from "./builder";
 import { FetchContext } from "./fetch-context";
 
+/**
+ * Defines all support event types.
+ */
 export type EventType = "activate" | "install" | "message" | "notificationclick" | "notificationclose" | "push" | "pushsubscriptionchange" | "sync";
+
+/**
+ * Defines the event handler method signature to be called when an event fires
+ */
 export type EventHandler = (event: any) => Promise<void> | void;
+
+/**
+ * Defines the request delegate used as a request pipeline built from swork
+ */
 export type RequestDelegate = (context: FetchContext) => Promise<void>;
+
+/**
+ * Defines the middleware signature
+ */
 export type Middleware = (context: FetchContext, next: () => Promise<void>) => Promise<void> | void;
 
 const allEvents = ["activate", "install", "message", "notificationclick", "notificationclose", "push", "pushsubscriptionchange", "sync"];
 
+/**
+ * A Swork application. Contains logic to create event handlers and
+ * middleware pipeline for a fetch request.
+ *
+ * @export
+ * @class Swork
+ */
 export class Swork {
     protected middlewares: Middleware[] = [];
     protected eventHandlers: Map<EventType, Array<() => Promise<void> | void>>;
 
+    /**
+     * Creates an instance of Swork.
+     * @memberof Swork
+     */
     constructor() {
         this.eventHandlers = new Map<EventType, Array<() => Promise<void> | void>>();
         allEvents.forEach((x) => {
@@ -19,6 +45,12 @@ export class Swork {
         });
     }
 
+    /**
+     * Registers all event handlers with the associated event and 
+     * attaches the middleware pipeline.
+     *
+     * @memberof Swork
+     */
     public listen(): void {
         allEvents.forEach((x) => {
             const handlers = this.eventHandlers.get(x as EventType)!;
@@ -54,6 +86,13 @@ export class Swork {
         builder.add.fetch(delegate);
     }
 
+    /**
+     * Adds a middleware to the fetch request pipeline
+     *
+     * @param {(...Array<(Swork | Middleware | Array<(Swork | Middleware)>)>)} params
+     * @returns {Swork}
+     * @memberof Swork
+     */
     public use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork {
         params.forEach((param) => {
             if (!Array.isArray(param)) {
@@ -76,6 +115,13 @@ export class Swork {
         return this;
     }
 
+    /**
+     * Adds an event handler for the provided event type.
+     *
+     * @param {EventType} event
+     * @param {(...Array<(event: any) => Promise<void> | void>)} handlers
+     * @memberof Swork
+     */
     public on(event: EventType, ...handlers: Array<(event: any) => Promise<void> | void>): void {
         Array.prototype.push.apply(this.eventHandlers.get(event)!, handlers);
     }
