@@ -9,6 +9,7 @@ MIT
 **Installation**
 
 `npm install swork`
+
 `yarn add swork`
 
 **Example**
@@ -97,7 +98,7 @@ The version of the service worker. Defaults to `"1.0.0"`.
 **origin**  
 The origin of the service worker. Defaults to `self.location.origin`.
 
-**environment**
+**environment**  
 The running environment. Defaults to `"production"`.
 
 These configurations can be referenced through the `swork` module.
