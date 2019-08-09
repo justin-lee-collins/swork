@@ -30,6 +30,6 @@ export interface Configuration {
 
 export const configuration = {
     environment: "production",	
-    origin: self.location.origin,	
+    origin: self.location ? self.location.origin : "https://www.unknown.com",	
     version: "1.0.0",	
 } as Configuration;
