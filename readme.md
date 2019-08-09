@@ -1,42 +1,36 @@
 # swork
 
-Swork is a service worker building framework intended to be a robust foundation for service worker applications. TypeScript and async functions are central to its implementation enabling increased productivity, reduced error rate and the removal of callbacks. Swork is not bundled with any middleware.
+swork is a service worker building framework intended to be a robust foundation for service worker applications. TypeScript and async functions are central to its implementation enabling increased productivity, reduced error rate and the removal of callbacks. Swork is not bundled with any middleware.
 
-### Hello World
+**License**
+
+MIT
+
+**Installation**
+
+`npm install swork`
+
+`yarn add swork`
+
+**Example**
 
 ```ts
-// sw.ts
-
-import { Swork, FetchContext, RequestDelegate } from "swork";
+import { Swork, FetchContext } from "swork";
 
 const app = new Swork();
 
-app.use((context: FetchContext, next: RequestDelegate) => {
+app.use((context: FetchContext, next: () => Promise<void>)) => {
     context.response = new Response("Hello World!");
 });
 
 app.listen();
 ```
 
-## Installation
-
-Install via npm:
-
-```ts
-npm install swork
-```
-
-Install via yarn:
-
-```ts
-yarn add swork
-```
-
 ## Middleware
 
 Swork is a middleware framework that accepts both async and standard functions. Middleware take two parameters: `context` and `next`. The supplied `context` is created anew for each request and encapsulates the initiating fetch event, request and eventual response. `next` is a function that when invoked will execute the downstream middleware.
 
-### Async Function
+**Async Function**
 
 ```ts
 app.use(async (context: FetchContext, next: () => Promise<void>) => {
@@ -47,7 +41,7 @@ app.use(async (context: FetchContext, next: () => Promise<void>) => {
 });
 ```
 
-### Standard Function
+**Standard Function**
 
 ```ts
 app.use((context: FetchContext, next: () => Promise<void>) => {
@@ -59,13 +53,18 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 });
 ```
 
-## Implementations
+## Middleware Implementations
 
 | Middleware | Description | Package | Repository |
 |------------|-------------|---------|------------|
 | swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
+| swork-cache| Cache strategies and events | [npmjs](https://www.npmjs.com/package/swork-cache) | [github](https://github.com/justin-lee-collins/swork-cache) |
+| swork-claim-clients | Claim active clients | [npmjs](https://www.npmjs.com/package/swork-claim-clients) | [github](https://github.com/justin-lee-collins/swork-claim-clients) |
+| swork-logger | Logs all fetch requests | [npmjs](https://www.npmjs.com/package/swork-logger) | [github](https://github.com/justin-lee-collins/swork-logger) |
 
-## Use
+## Methods
+
+**use**
 
 ```ts
 use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork
@@ -73,26 +72,15 @@ use(...params: Array<(Swork | Middleware | Array<(Swork | Middleware)>)>): Swork
 
 The `use` method accepts a middleware. Middleware are executed in the order provided for each incoming request via a `fetch` event handler. `use` can also accept arrays of middlewares or even provide a different `Swork` app instance.
 
-## On
+**on**
 
 ```ts
 on(event: EventType, ...handlers: Array<(event: any) => Promise<void> | void>): void
 ```
 
-Use the `on` method to provide any handlers to be executed during service worker events. The event type will vary based upon the event fired.
+Use the `on` method to provide any handlers to be executed during service worker events. The event type will vary based upon the event fired. On supports the following events: `activate`, `install`, `message`, `notificationclick`, `notificationclose`, `push`, `pushsubscriptionchange`, `sync`
 
-### Swork supported events
-
-* `activate`
-* `install`
-* `message`
-* `notificationclick`
-* `notificationclose`
-* `push`
-* `pushsubscriptionchange`
-* `sync`
-
-## Listen
+**listen**
 
 ```ts
 listen(): void
@@ -102,20 +90,23 @@ To initialize your Swork application, call `listen`. This will add the event han
 
 ## Configuration
 
-There are a handful of properties which will apply globally to the Swork application. Those include:
+These properties apply globally to the Swork application.
 
-* `version`  
-    The version of the service worker. Defaults to `"1.0.0"`.
-* `origin`  
-    The origin of the service worker. Defaults to `self.location.origin`.
-* `environment`  
-    The running environment. Defaults to `production`.
+**version**  
+The version of the service worker. Defaults to `"1.0.0"`.
 
-These configurations can be accessed or modified directly through the `swork` module.
+**origin**  
+The origin of the service worker. Defaults to `self.location.origin`.
+
+**environment**  
+The running environment. Defaults to `"production"`.
+
+These configurations can be referenced through the `swork` module.
 
 ```ts
 import { configuration } from "swork";
 
+configuration.environment = "production";
 console.log(configuration);
 // => { version: "1.0.0", origin: "https://localhost", environment: "production" }
 ```
