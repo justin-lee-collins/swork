@@ -6,6 +6,8 @@ import * as Request from "service-worker-mock/models/Request";
 // @ts-ignore 
 import * as Response from "service-worker-mock/models/Response";
 
+declare var global: any;
+
 export function mockInit() {
     Object.assign(global, makeServiceWorkerEnv(), {
         fetch: (request: RequestInfo) => {
