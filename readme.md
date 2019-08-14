@@ -1,5 +1,7 @@
 # swork
 
+[![npm](https://img.shields.io/npm/v/swork)](https://www.npmjs.com/package/swork) [![travis ci](https://travis-ci.org/justin-lee-collins/swork.svg?branch=master)](https://travis-ci.org/justin-lee-collins/swork.svg?branch=master)[![Coverage Status](https://coveralls.io/repos/github/justin-lee-collins/swork/badge.svg?branch=master)](https://coveralls.io/github/justin-lee-collins/swork?branch=master) [![download](https://img.shields.io/npm/dw/swork)](https://img.shields.io/npm/dw/swork)
+
 swork is a service worker building framework intended to be a robust foundation for service worker applications. TypeScript and async functions are central to its implementation enabling increased productivity, reduced error rate and the removal of callbacks. Swork is not bundled with any middleware.
 
 **License**
@@ -53,14 +55,15 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 });
 ```
 
-## Middleware Implementations
+### Middleware Implementations
 
 | Middleware | Description | Package | Repository |
 |------------|-------------|---------|------------|
 | swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
 | swork-cache| Cache strategies and events | [npmjs](https://www.npmjs.com/package/swork-cache) | [github](https://github.com/justin-lee-collins/swork-cache) |
 | swork-claim-clients | Claim active clients | [npmjs](https://www.npmjs.com/package/swork-claim-clients) | [github](https://github.com/justin-lee-collins/swork-claim-clients) |
-| swork-logger | Logs all fetch requests | [npmjs](https://www.npmjs.com/package/swork-logger) | [github](https://github.com/justin-lee-collins/swork-logger) |
+| swork-logger | Logs all fetch requests | [npmjs](https://www.npmjs.com/package/swork-logger) | [github](https://github.com/justin-lee-collins/swork-logger) |  
+
 
 ## Methods
 
