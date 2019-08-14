@@ -7,6 +7,8 @@ import { getFetchEvent, mockInit } from "./mock-helper";
 const build = (app: Swork) => app["build"]();
 const noopHandler = () => {};
 
+declare var global: any;
+
 describe("Swork tests", () => {
     let app: Swork;
 
