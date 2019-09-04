@@ -113,3 +113,7 @@ configuration.environment = "production";
 console.log(configuration);
 // => { version: "1.0.0", origin: "https://localhost", environment: "production" }
 ```
+
+## Notes
+
+As service workers do not yet natively support ES6 modules, a Swork implementation is expected to be built with your preferred bundler (e.g. Webpack, Rollup)
