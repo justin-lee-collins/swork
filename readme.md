@@ -60,6 +60,7 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 |------------|-------------|---------|------------|
 | swork-router| Router middleware | [npmjs](https://www.npmjs.com/package/swork-router) | [github](https://github.com/justin-lee-collins/swork-router) |
 | swork-cache| Cache strategies and events | [npmjs](https://www.npmjs.com/package/swork-cache) | [github](https://github.com/justin-lee-collins/swork-cache) |
+| swork-link| Link separate middleware pipelines | [npmjs](https://www.npmjs.com/package/swork-link) | [github](https://github.com/justin-lee-collins/swork-link) |
 | swork-claim-clients | Claim active clients | [npmjs](https://www.npmjs.com/package/swork-claim-clients) | [github](https://github.com/justin-lee-collins/swork-claim-clients) |
 | swork-logger | Logs all fetch requests | [npmjs](https://www.npmjs.com/package/swork-logger) | [github](https://github.com/justin-lee-collins/swork-logger) |  
 
