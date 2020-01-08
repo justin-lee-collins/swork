@@ -117,3 +117,7 @@ console.log(configuration);
 ## Notes
 
 As service workers do not yet natively support ES6 modules, a Swork implementation is expected to be built with your preferred bundler (e.g. Webpack, Rollup)
+
+## Contact
+
+If you are using `swork` or any of its related middlewares, please let me know on [gitter](https://gitter.im/swork-chat/community). I am always looking for feedback or additional middleware ideas.
