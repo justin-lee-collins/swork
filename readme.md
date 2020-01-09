@@ -63,7 +63,7 @@ app.use((context: FetchContext, next: () => Promise<void>) => {
 | swork-link| Link separate middleware pipelines | [npmjs](https://www.npmjs.com/package/swork-link) | [github](https://github.com/justin-lee-collins/swork-link) |
 | swork-claim-clients | Claim active clients | [npmjs](https://www.npmjs.com/package/swork-claim-clients) | [github](https://github.com/justin-lee-collins/swork-claim-clients) |
 | swork-logger | Logs all fetch requests | [npmjs](https://www.npmjs.com/package/swork-logger) | [github](https://github.com/justin-lee-collins/swork-logger) |  
-| swork-if | Middleware branching strategies | [npmjs](https://www.npmjs.com/package/swork-if) | [github](https://github.com/justin-lee-collins/swork-if) |
+| swork-when | Middleware branching strategies | [npmjs](https://www.npmjs.com/package/swork-when) | [github](https://github.com/justin-lee-collins/swork-when) |
 
 
 ## Methods
